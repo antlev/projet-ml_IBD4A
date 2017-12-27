@@ -8,3 +8,7 @@
 	- mnist.py using a simple MLP
 	- mnistConv.py using a convolutional network
 - Logs for Mnist
+
+### Cifar10
+
+- A simple script to test Cifar10 data
