@@ -12,3 +12,4 @@
 ### Cifar10
 
 - A simple script to test Cifar10 data
+- Logs for Cifar10
