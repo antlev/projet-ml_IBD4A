@@ -15,6 +15,7 @@ img_width, img_height = 128, 128
 
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
+
 nb_train_samples = 191129
 nb_validation_samples = 6289
 epochs = 50
@@ -23,23 +24,7 @@ batch_size = 1400
 input_shape = (img_width, img_height, 3)
 
 model = Sequential()
-model.add(Conv2D(16, (3, 3), input_shape=input_shape))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
-# model.add(Conv2D(32, (3, 3)))
-# model.add(Activation('relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-#
-# model.add(Conv2D(64, (3, 3)))
-# model.add(Activation('relu'))
-# model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(Flatten())
-# model.add(Dense(64))
-# model.add(Activation('relu'))
-#model.add(Dropout(0.5))
-model.add(Dense(3))
+model.add(Dense(128))
 model.add(Activation('softmax'))
 
 model.compile(loss=kullback_leibler_divergence,
@@ -48,14 +33,13 @@ model.compile(loss=kullback_leibler_divergence,
 
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
-experiment_name = "test_" + st
+experiment_name = "resized_linear_" + st
 print(experiment_name)
-tb_callback = TensorBoard("/media/antoine/Linux-1/esgi/machine-learning/kaggle_furnitures/log_furnitures/" + experiment_name)
+tb_callback = TensorBoard("/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/log_furnitures/" + experiment_name)
 
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(
-    rescale=1. / 255,
-data_format="channels_last")
+    rescale=1. / 255)
 #     shear_range=0.2,
 #     zoom_range=0.2,
 #     horizontal_flip=True)
@@ -75,13 +59,6 @@ validation_generator = vaidation_datagen.flow_from_directory(
     target_size=(img_width, img_height),
     batch_size=batch_size,
     class_mode='categorical')
-
-batch=next(train_generator)
-X=batch[0]
-Y=batch[1]
-print(X.shape)
-print(Y.shape)
-
 
 model.fit_generator(
     train_generator,
