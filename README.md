@@ -13,3 +13,9 @@
 
 - A simple script to test Cifar10 data
 - Logs for Cifar10
+
+### Kaggl_furnitures
+
+- A Parse script to download images
+- A simple script to train model
+
