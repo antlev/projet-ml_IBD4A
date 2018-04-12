@@ -1,52 +1,53 @@
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D
-from keras.layers import Activation, Dropout, Flatten, Dense
+from keras.layers import Activation, Flatten, Dense
 from keras.callbacks import *
 from keras.losses import *
 from keras.optimizers import *
-
-import itertools
+from keras.activations import *
 import time
 import datetime
 
-# dimensions of our images.
-img_width, img_height = 128, 128
-
-train_data_dir = 'data/train'
-validation_data_dir = 'data/validation'
-
-nb_train_samples = 191129
-nb_validation_samples = 6289
-epochs = 50
+# Adapt to computer
+train_data_dir = '../data/train'
+validation_data_dir = '../data/validation'
+log_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/log_furnitures/"
 batch_size = 1400
 
-input_shape = (img_width, img_height, 3)
+# Experiment name
+ts = time.time()
+st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
+experiment_name = "resized-128_linear_" + st
+print(experiment_name)
+
+# Dataset
+nb_train_samples = 191129
+nb_validation_samples = 6289
+img_width, img_height = 128, 128
+input_shape = (img_width,img_height,3)
+
+# Learning
+epochs = 50
 
 model = Sequential()
-model.add(Dense(128))
+model.add((Flatten(input_shape=input_shape)))
+model.add(Dense(128, activation=tanh))
 model.add(Activation('softmax'))
 
 model.compile(loss=kullback_leibler_divergence,
               optimizer=rmsprop(),
               metrics=['accuracy'])
 
-ts = time.time()
-st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
-experiment_name = "resized_linear_" + st
-print(experiment_name)
-tb_callback = TensorBoard("/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/log_furnitures/" + experiment_name)
+tb_callback = TensorBoard(log_dir + experiment_name)
 
-# this is the augmentation configuration we will use for training
+# Generator
 train_datagen = ImageDataGenerator(
     rescale=1. / 255)
 #     shear_range=0.2,
 #     zoom_range=0.2,
 #     horizontal_flip=True)
 
-# this is the augmentation configuration we will use for testing:
-# only rescaling
-vaidation_datagen = ImageDataGenerator(rescale=1. / 255)
+validation_datagen = ImageDataGenerator(rescale=1. / 255)
 
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,
@@ -54,11 +55,17 @@ train_generator = train_datagen.flow_from_directory(
     batch_size=batch_size,
     class_mode='categorical')
 
-validation_generator = vaidation_datagen.flow_from_directory(
+validation_generator = validation_datagen.flow_from_directory(
     validation_data_dir,
     target_size=(img_width, img_height),
     batch_size=batch_size,
     class_mode='categorical')
+
+batch=next(train_generator)
+X=batch[0]
+Y=batch[1]
+print(X.shape)
+print(Y.shape)
 
 model.fit_generator(
     train_generator,
