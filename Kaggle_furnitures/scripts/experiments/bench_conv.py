@@ -9,20 +9,27 @@ from keras.layers import Conv2D, MaxPooling2D
 import time
 import datetime
 
+def own_callback():
+    print("yeah !")
+    print(model)
+    model.save_weights(model_dir + experiment_name + '.')
+
+
 # Adapt to computer
 train_data_dir = '/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/data/train'
 validation_data_dir = '/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/data/validation'
 log_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/log_furnitures/"
 model_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/models"
-batch_size = 1400
+batch_size = 100
 
 # Experiment name
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
-experiment_name = "resized-128_experiment_1" + st
+# experiment_name = "resized-128_experiment_1" + st
+experiment_name = "test" + st
 print(experiment_name)
 
-# Dataset
+# Adapt to Dataset
 nb_train_samples = 191129
 nb_validation_samples = 6289
 img_width, img_height = 128, 128
@@ -87,11 +94,21 @@ activations_conf = (
     ('tanh', 'tanh', 'tanh', 'softmax'),
     ('tanh', 'tanh', 'tanh', 'tanh','softmax')
 )
+# Compilation
+loss_conf = (
+    ('categorical_crossentropy'),
+    ('categorical_crossentropy'),
+    ('categorical_crossentropy'),
+    ('categorical_crossentropy')
+)
+optimizer_conf = (
+    ('rmsprop'),
+    ('rmsprop'),
+    ('rmsprop'),
+    ('rmsprop')
+)
 
-loss = ("kullback_leibler_divergence", "kullback_leibler_divergence", "kullback_leibler_divergence", "kullback_leibler_divergence")
-optimizer =  ("rmsprop", "rmsprop", "rmsprop", "rmsprop")
-
-assert (len(layers_conf) == len(layers_dim) == len(kernel_conf) == len(pool_size_conf) == len(activations_conf) ), "Problem with bench conf"
+assert (len(layers_conf) == len(layers_dim) == len(kernel_conf) == len(pool_size_conf) == len(activations_conf) == len(loss_conf) == len(optimizer_conf) ), "Problem with bench conf"
 for i in range(len(layers_conf) ):
     assert (len(layers_conf[i]) == len(layers_dim[i]) == len(kernel_conf[i]) == len(pool_size_conf[i]) == len(activations_conf[i]) ), "Problem with model " + i
 
@@ -102,22 +119,33 @@ for lauch_nb in range(nb_launch):
         model_desc = ""
 
         for layer_nb in range(len(layers_conf[model_nb])):
-            if layers_conf[model_nb][layer_nb] == 'C2D':
-                model.add(Conv2D(layers_dim[model_nb][layer_nb], kernel_conf[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb]))
-                model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + str(kernel_conf[model_nb][layer_nb]) + \
-                              activations_shortcut[activations_conf[model_nb][layer_nb]]
-            if layers_conf[model_nb][layer_nb] == 'MP2D':
-                model.add(MaxPooling2D(pool_size=pool_size_conf[model_nb][layer_nb]))
-                model_desc += str(layers_conf[model_nb][layer_nb]) + str(pool_size_conf[model_nb][layer_nb])
-            if layers_conf[model_nb][layer_nb] == 'D':
-                model.add(Dense(layers_conf[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb]))
-                model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + "-" + activations_shortcut[activations_conf[model_nb][layer_nb]]
+            if layer_nb == 0:
+                if layers_conf[model_nb][layer_nb] == 'C2D':
+                    model.add(Conv2D(layers_dim[model_nb][layer_nb], kernel_conf[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb], input_shape=input_shape))
+                    model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + str(kernel_conf[model_nb][layer_nb]) + \
+                                  activations_shortcut[activations_conf[model_nb][layer_nb]]
+                if layers_conf[model_nb][layer_nb] == 'D':
+                    model.add(Flatten())
+                    model.add(Dense(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb], input_shape=input_shape))
+                    model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + "-" + activations_shortcut[activations_conf[model_nb][layer_nb]]
+            else:
+                if layers_conf[model_nb][layer_nb] == 'C2D':
+                    model.add(Conv2D(layers_dim[model_nb][layer_nb], kernel_conf[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb]))
+                    model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + str(kernel_conf[model_nb][layer_nb]) + \
+                                  activations_shortcut[activations_conf[model_nb][layer_nb]]
+                if layers_conf[model_nb][layer_nb] == 'MP2D':
+                    model.add(MaxPooling2D(pool_size=pool_size_conf[model_nb][layer_nb]))
+                    model_desc += str(layers_conf[model_nb][layer_nb]) + str(pool_size_conf[model_nb][layer_nb])
+                if layers_conf[model_nb][layer_nb] == 'D':
+                    model.add(Flatten())
+                    model.add(Dense(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb]))
+                    model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + "-" + activations_shortcut[activations_conf[model_nb][layer_nb]]
 
             if(layer_nb != len(layers_conf[model_nb])-1):
                 model_desc += '-'
 
-        model.compile(loss=kullback_leibler_divergence,
-                      optimizer=rmsprop(),
+        model.compile(loss=loss_conf[model_nb],
+                      optimizer=optimizer_conf[model_nb],
                       metrics=['accuracy'])
 
         model_desc += "." + str(lauch_nb)
@@ -134,3 +162,5 @@ for lauch_nb in range(nb_launch):
             validation_steps=nb_validation_samples // batch_size)
 
         model.save_weights(model_dir + experiment_name + '.' )
+
+
