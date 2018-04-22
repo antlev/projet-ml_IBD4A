@@ -20,7 +20,7 @@ train_data_dir = '/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/d
 validation_data_dir = '/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/data/validation'
 log_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/log_furnitures/"
 model_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/models"
-batch_size = 100
+batch_size = 1400
 
 # Experiment name
 ts = time.time()
@@ -64,48 +64,56 @@ nb_launch = 4
 
 activations_shortcut = {'sigmoid' : 'Si', 'softmax' : 'Sm', 'tanh' : 'T', 'relu': 'R'}
 
+# D = Dense | C2D = Conv2D | MP2D = MaxPooling
 layers_conf = (
-    ('C2D', 'C2D', 'D'),
-    ('C2D', 'C2D', 'D'),
-    ('C2D', 'MP2D', 'C2D', 'D'),
-    ('C2D', 'MP2D', 'C2D','MP2D',  'D')
+    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D'),
+    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D'),
+    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D'),
+    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D'),
+    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D')
 )
 layers_dim = (
-    (64, 64, 128),
-    (64, 128, 128),
-    (64, 64, 128, 128),
-    (128, 128, 128, 128, 128)
+    (16, 0, 32, 0, 64, 0, 128),
+    (16, 0, 32, 0, 64, 0, 128),
+    (16, 0, 32, 0, 64, 0, 128),
+    (16, 0, 32, 0, 64, 0, 128),
+    (16, 0, 32, 0, 64, 0, 128)
 )
 kernel_conf = (
-    ((3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3))
+    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3)),
+    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3)),
+    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3)),
+    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3)),
+    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3))
 )
 pool_size_conf = (
-    ((2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2))
+    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2)),
+    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2)),
+    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2)),
+    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2)),
+    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2))
 )
 activations_conf = (
-    ('tanh', 'tanh', 'softmax'),
-    ('tanh', 'tanh', 'softmax'),
-    ('tanh', 'tanh', 'tanh', 'softmax'),
-    ('tanh', 'tanh', 'tanh', 'tanh','softmax')
+    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax'),
+    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax'),
+    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax'),
+    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax'),
+    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax')
 )
 # Compilation
 loss_conf = (
     ('categorical_crossentropy'),
-    ('categorical_crossentropy'),
-    ('categorical_crossentropy'),
-    ('categorical_crossentropy')
+    ('kullback_leibler_divergence'),
+    ('mean_squared_error'),
+    ('mean_absolute_error'),
+    ('poisson')
 )
 optimizer_conf = (
-    ('rmsprop'),
-    ('rmsprop'),
-    ('rmsprop'),
-    ('rmsprop')
+    ('sgd'),
+    ('sgd'),
+    ('sgd'),
+    ('sgd'),
+    ('sgd')
 )
 
 assert (len(layers_conf) == len(layers_dim) == len(kernel_conf) == len(pool_size_conf) == len(activations_conf) == len(loss_conf) == len(optimizer_conf) ), "Problem with bench conf"
