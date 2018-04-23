@@ -6,17 +6,11 @@ from keras.layers import Conv2D, MaxPooling2D
 import time
 import datetime
 
-def own_callback():
-    print("yeah !")
-    print(model)
-    model.save_weights(model_dir + experiment_name + '.')
-
-
 # Adapt to computer
 train_data_dir = '/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/data/train'
 validation_data_dir = '/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/data/validation'
 log_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/log_furnitures/"
-model_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/models"
+model_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/models/"
 batch_size = 1400
 
 # Experiment name
@@ -26,13 +20,40 @@ experiment_name = st + "_"
 print(experiment_name)
 
 # Experiments param
-epochs = 50
 nb_launch = 4
+epochs = 50
 
 # Shorcuts
-activations_shortcut = {'sigmoid' : 'Si', 'softmax' : 'Sm', 'tanh' : 'T', 'relu': 'R' }
-loss_shortcut = {'categorical_crossentropy' : 'cc', 'kullback_leibler_divergence' : 'kld', 'mean_squared_error' : 'mse', 'mean_absolute_error' : 'mae', 'poisson' : 'po' }
-optimizer_shortcut = {'sgd' : 'sgd', 'rmsprop' : 'rm' }
+activations_shortcut = {'sigmoid' : 'Si',
+                        'softsign' : 'Ss',
+                        'softplus' : 'Sp',
+                        'elu' : 'E',
+                        'selu' : 'Se',
+                        'softmax' : 'Sm',
+                        'tanh' : 'T',
+                        'relu': 'R',
+                        'hard_sigmoid' :'Hs',
+                        'linear': 'L'}
+
+loss_shortcut = {'categorical_crossentropy' : 'cc',
+                 'kullback_leibler_divergence' : 'kld',
+                 'mean_squared_error' : 'mse',
+                 'mean_absolute_error' : 'mae',#
+                 'squared_hinge' : 'sh',#
+                 'hinge' : 'h',##
+                 'logcosh' : 'lc',##
+                 'categorical_hinge' : 'ch',
+                 'cosine_proximity' : 'cp',
+                 'poisson' : 'po' }#
+
+optimizer_shortcut = {'sgd' : 'sgd',
+                      'rmsprop' : 'rm',
+                      'Adagrad' : 'adag',#
+                      'Adadelta' : 'adad',#
+                      'Adam' :'adam',#
+                      'Adamax' : 'adax',#
+                      'Nadam' : 'nada',#
+                      'TFOptimizer' : 'tf' }#
 #----------------------------------------------------------------------------------------------------------------------------------------------
 # Adapt to Dataset
 nb_train_samples = 191129
@@ -166,6 +187,9 @@ for lauch_nb in range(nb_launch):
 
         model_desc += "." + str(lauch_nb)
         tb_callback = TensorBoard(log_dir + experiment_name + '.' + model_desc)
+        model_checkpoint = ModelCheckpoint(model_dir + experiment_name + model_desc)
+
+        callback_list = [tb_callback, model_checkpoint]
 
         print(">>> Fitting model >" + model_desc + "< log >" + log_dir + experiment_name + '.' + model_desc + "<")
 
@@ -173,7 +197,7 @@ for lauch_nb in range(nb_launch):
             train_generator,
             steps_per_epoch=nb_train_samples // batch_size,
             epochs=epochs,
-            callbacks=[tb_callback],
+            callbacks=callback_list,
             validation_data=validation_generator,
             validation_steps=nb_validation_samples // batch_size)
 
