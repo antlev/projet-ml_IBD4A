@@ -2,9 +2,6 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras.callbacks import *
-from keras.losses import *
-from keras.optimizers import *
-from keras.activations import *
 from keras.layers import Conv2D, MaxPooling2D
 import time
 import datetime
@@ -25,22 +22,34 @@ batch_size = 1400
 # Experiment name
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
-# experiment_name = "resized-128_experiment_1" + st
-experiment_name = "test" + st
+experiment_name = st + "_"
 print(experiment_name)
 
+# Experiments param
+epochs = 50
+nb_launch = 4
+
+# Shorcuts
+activations_shortcut = {'sigmoid' : 'Si', 'softmax' : 'Sm', 'tanh' : 'T', 'relu': 'R' }
+loss_shortcut = {'categorical_crossentropy' : 'cc', 'kullback_leibler_divergence' : 'kld', 'mean_squared_error' : 'mse', 'mean_absolute_error' : 'mae', 'poisson' : 'po' }
+optimizer_shortcut = {'sgd' : 'sgd', 'rmsprop' : 'rm' }
+#----------------------------------------------------------------------------------------------------------------------------------------------
 # Adapt to Dataset
 nb_train_samples = 191129
 nb_validation_samples = 6289
 img_width, img_height = 128, 128
 input_shape = (img_width,img_height,3)
+resized = True
+
+# P1 : shear_range=0.2, zoom_range=0.2, horizontal_flip=True)
+preprocessing = "P1"
 
 # Generator
 train_datagen = ImageDataGenerator(
-    rescale=1. / 255)
-#     shear_range=0.2,
-#     zoom_range=0.2,
-#     horizontal_flip=True)
+    rescale=1. / 255,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True)
 
 validation_datagen = ImageDataGenerator(rescale=1. / 255)
 
@@ -56,13 +65,7 @@ validation_generator = validation_datagen.flow_from_directory(
     batch_size=batch_size,
     class_mode='categorical')
 
-# Learning
-nb_test = 4
-epochs = 50
-
-nb_launch = 4
-
-activations_shortcut = {'sigmoid' : 'Si', 'softmax' : 'Sm', 'tanh' : 'T', 'relu': 'R'}
+##################### MODELS #####################
 
 # D = Dense | C2D = Conv2D | MP2D = MaxPooling
 layers_conf = (
@@ -115,7 +118,7 @@ optimizer_conf = (
     ('sgd'),
     ('sgd')
 )
-
+#----------------------------------------------------------------------------------------------------------------------------------------------
 assert (len(layers_conf) == len(layers_dim) == len(kernel_conf) == len(pool_size_conf) == len(activations_conf) == len(loss_conf) == len(optimizer_conf) ), "Problem with bench conf"
 for i in range(len(layers_conf) ):
     assert (len(layers_conf[i]) == len(layers_dim[i]) == len(kernel_conf[i]) == len(pool_size_conf[i]) == len(activations_conf[i]) ), "Problem with model " + i
@@ -125,6 +128,11 @@ for lauch_nb in range(nb_launch):
     for model_nb in range(len(layers_conf)):
         model = Sequential()
         model_desc = ""
+        if resized:
+            model_desc += "R128_"
+        if preprocessing:
+            model_desc += preprocessing + "_"
+        model_desc += loss_shortcut[loss_conf[model_nb]] + "-" + optimizer_shortcut[optimizer_conf[model_nb]] + "_"
 
         for layer_nb in range(len(layers_conf[model_nb])):
             if layer_nb == 0:
