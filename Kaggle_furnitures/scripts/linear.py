@@ -14,10 +14,15 @@ validation_data_dir = '../data/validation'
 log_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/log_furnitures/"
 batch_size = 1400
 
+def own_callback():
+    print("yeah !")
+    model.save_weights('first_try.h5')
+
 # Experiment name
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
-experiment_name = "resized-128_linear_" + st
+experiment_name = "test_" + st
+# experiment_name = "resized-128_linear_" + st
 print(experiment_name)
 
 # Dataset
@@ -31,8 +36,12 @@ epochs = 50
 
 model = Sequential()
 model.add((Flatten(input_shape=input_shape)))
-model.add(Dense(128, activation=tanh))
+model.add(Dense(128, activation='tanh'))
 model.add(Activation('softmax'))
+
+# model.compile(loss=sgd(lr=0.1),
+#               optimizer=mse,
+#               metrics=['accuracy'])
 
 model.compile(loss=kullback_leibler_divergence,
               optimizer=rmsprop(),

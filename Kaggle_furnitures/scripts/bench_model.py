@@ -20,8 +20,8 @@ experiment_name = st + "_"
 print(experiment_name)
 
 # Experiments param
-nb_launch = 4
-epochs = 50
+nb_launch = 3
+epochs = 30
 
 # Shorcuts
 activations_shortcut = {'sigmoid' : 'Si',
@@ -90,49 +90,56 @@ validation_generator = validation_datagen.flow_from_directory(
 
 # D = Dense | C2D = Conv2D | MP2D = MaxPooling
 layers_conf = (
-    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D'),
-    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D'),
-    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D'),
-    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D'),
-    ('C2D', 'MP2D', 'C2D', 'MP2D', 'C2D', 'MP2D', 'D')
+    ('C2D', 'MP2D', 'D'),
+    ('C2D', 'MP2D', 'D'),
+    ('C2D', 'MP2D', 'D'),
+    ('C2D', 'MP2D', 'D'),
+    ('C2D', 'MP2D', 'D'),
+    ('C2D', 'MP2D', 'D')
 )
 layers_dim = (
-    (16, 0, 32, 0, 64, 0, 128),
-    (16, 0, 32, 0, 64, 0, 128),
-    (16, 0, 32, 0, 64, 0, 128),
-    (16, 0, 32, 0, 64, 0, 128),
-    (16, 0, 32, 0, 64, 0, 128)
+    (16, 0, 128),
+    (16, 0, 128),
+    (16, 0, 128),
+    (16, 0, 128),
+    (16, 0, 128),
+    (16, 0, 128)
 )
 kernel_conf = (
-    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3), (3, 3))
+    ((3, 3), (3, 3), (3, 3)),
+    ((3, 3), (3, 3), (3, 3)),
+    ((3, 3), (3, 3), (3, 3)),
+    ((3, 3), (3, 3), (3, 3)),
+    ((3, 3), (3, 3), (3, 3)),
+    ((3, 3), (3, 3), (3, 3))
 )
 pool_size_conf = (
-    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2), (2, 2))
+    ((2, 2), (2, 2), (2, 2)),
+    ((2, 2), (2, 2), (2, 2)),
+    ((2, 2), (2, 2), (2, 2)),
+    ((2, 2), (2, 2), (2, 2)),
+    ((2, 2), (2, 2), (2, 2)),
+    ((2, 2), (2, 2), (2, 2))
 )
 activations_conf = (
-    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax'),
-    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax'),
-    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax'),
-    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax'),
-    ('relu', 'relu', 'relu', 'relu', 'relu', 'relu', 'softmax')
+    ('relu', 'relu', 'softmax'),
+    ('tanh', 'relu', 'softmax'),
+    ('softmax', 'relu', 'softmax'),
+    ('sigmoid', 'relu','softmax'),
+    ('hard_sigmoid', 'relu', 'softmax'),
+    ('linear', 'relu', 'softmax')
 )
 # Compilation
 loss_conf = (
-    ('categorical_crossentropy'),
-    ('kullback_leibler_divergence'),
     ('mean_squared_error'),
-    ('mean_absolute_error'),
-    ('poisson')
+    ('mean_squared_error'),
+    ('mean_squared_error'),
+    ('mean_squared_error'),
+    ('mean_squared_error'),
+    ('mean_squared_error')
 )
 optimizer_conf = (
+    ('sgd'),
     ('sgd'),
     ('sgd'),
     ('sgd'),
