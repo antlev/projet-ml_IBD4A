@@ -9,9 +9,9 @@ import time
 import datetime
 
 # Adapt to computer
-train_data_dir = '../data/train'
-validation_data_dir = '../data/validation'
-log_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/log_furnitures/"
+train_data_dir = '../data/train/'
+validation_data_dir = '../data/validation/'
+log_dir = "../log_furnitures/"
 batch_size = 1400
 
 def own_callback():

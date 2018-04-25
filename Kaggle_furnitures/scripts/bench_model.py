@@ -7,10 +7,10 @@ import time
 import datetime
 
 # Adapt to computer
-train_data_dir = '/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/data/train'
-validation_data_dir = '/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/data/validation'
-log_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/log_furnitures/"
-model_dir = "/media/antoine/Linux-1/git/projet-ml_IBD4A/Kaggle_furnitures/models/"
+train_data_dir = '../data/train'
+validation_data_dir = '../data/validation'
+log_dir = '../log_furnitures/'
+model_dir = '../models/'
 batch_size = 1400
 
 # Experiment name
@@ -106,20 +106,19 @@ layers_dim = (
     (16, 0, 128)
 )
 kernel_conf = (
-    ((3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3)),
-    ((3, 3), (3, 3), (3, 3))
+    ((3,3), (3,3), (3,3)),
+    ((3,3), (3,3), (3,3)),
+    ((3,3), (3,3), (3,3)),
+    ((3,3), (3,3), (3,3)),
+    ((3,3), (3,3), (3,3)),
+    ((3,3), (3,3), (3,3))
 )
 pool_size_conf = (
-    ((2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2)),
-    ((2, 2), (2, 2), (2, 2))
+    ((2,2), (2,2), (2,2)),
+    ((2,2), (2,2), (2,2)),
+    ((2,2), (2,2), (2,2)),
+    ((2,2), (2,2), (2,2)),
+    ((2,2), (2,2), (2,2))
 )
 activations_conf = (
     ('relu', 'relu', 'softmax'),
