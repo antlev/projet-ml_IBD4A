@@ -118,6 +118,7 @@ pool_size_conf = (
     ((2,2), (2,2), (2,2)),
     ((2,2), (2,2), (2,2)),
     ((2,2), (2,2), (2,2)),
+    ((2,2), (2,2), (2,2)),
     ((2,2), (2,2), (2,2))
 )
 activations_conf = (
@@ -146,9 +147,19 @@ optimizer_conf = (
     ('sgd')
 )
 #----------------------------------------------------------------------------------------------------------------------------------------------
-assert (len(layers_conf) == len(layers_dim) == len(kernel_conf) == len(pool_size_conf) == len(activations_conf) == len(loss_conf) == len(optimizer_conf) ), "Problem with bench conf"
+assert (len(layers_conf) == len(layers_dim))
+assert (len(layers_conf) == len(kernel_conf))
+assert (len(layers_conf) == len(pool_size_conf))
+assert (len(layers_conf) == len(activations_conf))
+assert (len(layers_conf) == len(loss_conf))
+assert (len(layers_conf) == len(optimizer_conf))
+
+
 for i in range(len(layers_conf) ):
-    assert (len(layers_conf[i]) == len(layers_dim[i]) == len(kernel_conf[i]) == len(pool_size_conf[i]) == len(activations_conf[i]) ), "Problem with model " + i
+    assert (len(layers_conf[i]) == len(layers_dim[i]))
+    assert (len(layers_conf[i]) == len(kernel_conf[i]))
+    assert (len(layers_conf[i]) == len(pool_size_conf[i]))
+    assert (len(layers_conf[i]) == len(activations_conf[i]))
 
 # Model construction
 for lauch_nb in range(nb_launch):
@@ -197,7 +208,7 @@ for lauch_nb in range(nb_launch):
 
         callback_list = [tb_callback, model_checkpoint]
 
-        print(">>> Fitting model >" + model_desc + "< log >" + log_dir + experiment_name + '.' + model_desc + "<")
+        print(">>> Fitting model >" + model_desc + "< log >" + log_dir + experiment_name + model_desc + "<")
 
         model.fit_generator(
             train_generator,
