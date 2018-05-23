@@ -1,17 +1,24 @@
 from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
-import cv2
-import numpy as np
+import os
 
-model_path = "../models/test"
+def check_missing_img():
+    missing = []
+    for i in range(1, nb_test_img):
+        if os.path.isfile(test_data_dir + "1/" + str(i) + ".jpg") == False:
+            missing.append(str(i))
+    return missing
+
+
+model_path = "../models/violets/test_model"
 test_data_dir = "../data/test/"
 submission_file = "../submission/test.sub"
 
 img_width=128
 img_height=128
 img_resized = (img_width,img_height)
-nb_test_img = 12510
-batch_size = 1251
+nb_test_img = 12800
+batch_size = 1280
 nb_batch = 10
 nb_class=128
 
@@ -30,7 +37,12 @@ results = model.predict_generator(test_generator, nb_batch)
 
 results_to_file = open(submission_file, "w")
 
-for i in range(batch_size*nb_batch):
+missing = check_missing_img()
+print(str(len(missing)) + " images are missing")
+
+for i in range(1, batch_size*nb_batch):
+    if str(i) in missing:
+        continue
     prob=0
     class_nb=0
     for j in range(nb_class):
@@ -40,3 +52,4 @@ for i in range(batch_size*nb_batch):
     results_to_file.write(str(i) + "," + str(class_nb) + "\n")
 
 results_to_file.close()
+
