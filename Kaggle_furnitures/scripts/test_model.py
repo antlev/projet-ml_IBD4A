@@ -1,6 +1,11 @@
 from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
 import os
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.3
+set_session(tf.Session(config=config))
 
 def check_missing_img():
     missing = []
@@ -10,15 +15,15 @@ def check_missing_img():
     return missing
 
 
-model_path = "../models/violets/test_model"
-test_data_dir = "../data/test/"
-submission_file = "../submission/test.sub"
+model_path = "D:/ESGI4A/Semestre1/ML/projet-ml_IBD4A/Kaggle_furnitures/models/violets/test"
+test_data_dir = "D:/ESGI4A/Semestre2/ML/Proj_kaggle/data/test/"
+submission_file = "D:/ESGI4A/Semestre1/ML/projet-ml_IBD4A/Kaggle_furnitures/submission/test.sub"
 
 img_width=128
 img_height=128
 img_resized = (img_width,img_height)
 nb_test_img = 12800
-batch_size = 1280
+batch_size = 100
 nb_batch = 10
 nb_class=128
 
