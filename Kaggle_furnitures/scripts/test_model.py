@@ -13,12 +13,12 @@ def check_missing_img(data_dir, nb_img):
     return missing
 
 
-model_path = "../modelscheck_R128_P1_cc-sgd_C2D_16(3-3)mp(2-2)_128sm_2018-05-25_13:32:52"
-validation_data_dir = "../data/validation/"
+model_path = "D:/ESGI4A/Semestre1/ML/projet-ml_IBD4A/Kaggle_furnitures/models/test2"
+validation_data_dir = "D:/ESGI4A/Semestre2/ML/Proj_kaggle/data/validation_plain/"
+test_data_dir = "D:/ESGI4A/Semestre2/ML/Proj_kaggle/test/"
 raw_validation_data_dir = "../data/validationRaw/"
-test_data_dir = "../data/test/"
-val_submission_file = "../submission/val.sub"
-test_submission_file = "../submission/test.sub"
+val_submission_file = "D:/ESGI4A/Semestre1/ML/projet-ml_IBD4A/Kaggle_furnitures/submission/val.sub"
+test_submission_file = "D:/ESGI4A/Semestre1/ML/projet-ml_IBD4A/Kaggle_furnitures/submission/test.sub"
 
 img_width=128
 img_height=128
