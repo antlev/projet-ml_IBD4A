@@ -17,7 +17,7 @@ def check_missing_img(data_dir, test):
     return missing
 
 
-model_path = "../models/test"
+model_path = "../modelscheck_R128_P1_cc-sgd_C2D_16(3-3)mp(2-2)_128sm_2018-05-25_13:32:52"
 validation_data_dir = "../data/validation/"
 test_data_dir = "../data/test/"
 val_submission_file = "../submission/val.sub"
@@ -82,7 +82,7 @@ test_generator = test_datagen.flow_from_directory(
 results = model.predict_generator(test_generator, nb_batch)
 results_to_file = open(test_submission_file, "w")
 
-test_missing = check_missing_img()
+test_missing = check_missing_img(test_data_dir, True)
 print(str(len(test_missing)) + " test images are missing")
 
 k=0
