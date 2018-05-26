@@ -13,12 +13,12 @@ def check_missing_img(data_dir, nb_img):
     return missing
 
 
-model_path = "D:/ESGI4A/Semestre1/ML/projet-ml_IBD4A/Kaggle_furnitures/models/test2"
-validation_data_dir = "D:/ESGI4A/Semestre2/ML/Proj_kaggle/data/validation_plain/"
-test_data_dir = "D:/ESGI4A/Semestre2/ML/Proj_kaggle/test/"
-raw_validation_data_dir = "../data/validationRaw/"
-val_submission_file = "D:/ESGI4A/Semestre1/ML/projet-ml_IBD4A/Kaggle_furnitures/submission/val.sub"
-test_submission_file = "D:/ESGI4A/Semestre1/ML/projet-ml_IBD4A/Kaggle_furnitures/submission/test.sub"
+model_path = "models/R128_P1_cc-sgd_C2D_16(3-3)mp(2-2)_128sm_2018-05-25_19:22:53"
+validation_data_dir = "data/validation/"
+test_data_dir = "data/test/"
+raw_validation_data_dir = "data/validationRaw/"
+val_submission_file = "submission/val.sub"
+test_submission_file = "submission/test.sub"
 
 img_width=128
 img_height=128
@@ -42,7 +42,7 @@ validation_generator = validation_datagen.flow_from_directory(
     batch_size=batch_size,
     class_mode='categorical')
 
-print("Evaluate validation data")
+print("Evaluate validation data...")
 evaluation = model.evaluate_generator(validation_generator, nb_batch_val)
 print("Model evaluation on validation data : " + str(evaluation))
 
@@ -53,7 +53,8 @@ raw_validation_generator = raw_validation_datagen.flow_from_directory(
     raw_validation_data_dir,
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    class_mode=None)
+    class_mode=None,
+    shuffle=False)
 
 val_missing = check_missing_img(raw_validation_data_dir, nb_val_img)
 print(str(len(val_missing)) + " raw validation images are missing")
@@ -62,19 +63,19 @@ print("Predict on validation_Raw...")
 raw_val_results = model.predict_generator(raw_validation_generator, nb_batch_val)
 raw_val_results_to_file = open(val_submission_file, "w")
 
-k=0
-for i in range(1, nb_val_img):
-    if str(i) in val_missing:
-        raw_val_results_to_file.write(str(i) + ",no image\n")
+result_nb=0
+for img_nb in range(1, nb_val_img):
+    if str(img_nb) in val_missing:
+        raw_val_results_to_file.write(str(img_nb) + ",no image\n")
     else:
         prob=0
-        class_nb=0
-        for j in range(1, nb_class):
-            if raw_val_results[k][j] > prob:
-                class_nb=j
-                prob=raw_val_results[k][j]
-        raw_val_results_to_file.write(str(i) + "," + str(class_nb) + "\n")
-        k=k+1
+        class_predicted=0
+        for class_nb in range(nb_class):
+            if raw_val_results[result_nb][class_nb] > prob:
+                class_predicted=class_nb
+                prob=raw_val_results[result_nb][class_nb]
+        raw_val_results_to_file.write(str(img_nb) + "," + str(class_predicted) + "\n")
+        result_nb= result_nb + 1
 
 raw_val_results_to_file.close()
 print("Finnished written raw validation results")
@@ -96,19 +97,19 @@ print(str(len(test_missing)) + " test images are missing")
 test_results = model.predict_generator(test_generator, nb_batch_test)
 test_results_to_file = open(test_submission_file, "w")
 
-k=0
-for i in range(1, nb_test_img):
-    if str(i) in test_missing:
-        test_results_to_file.write(str(i) + "," + str(random.randint(1, 128)) + "\n")
+result_nb=0
+for img_nb in range(1, nb_test_img):
+    if str(img_nb) in test_missing:
+        test_results_to_file.write(str(img_nb) + "," + str(random.randint(1, 128)) + "\n")
     else:
         prob=0
-        class_nb=0
-        for j in range(1, nb_class):
-            if test_results[k][j] > prob:
-                class_nb=j
-                prob=test_results[k][j]
-        test_results_to_file.write(str(i) + "," + str(class_nb) + "\n")
-        k=k+1
+        class_predicted=0
+        for class_nb in range(nb_class):
+            if test_results[result_nb][class_nb] > prob:
+                class_predicted=class_nb
+                prob=test_results[result_nb][class_nb]
+        test_results_to_file.write(str(img_nb) + "," + str(class_predicted) + "\n")
+        result_nb=result_nb + 1
 
 test_results_to_file.close()
 print("Finnished written test results")
