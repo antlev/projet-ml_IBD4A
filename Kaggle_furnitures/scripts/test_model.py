@@ -5,14 +5,6 @@ import random
 import tensorflow as tf
 from keras.backend.tensorflow_backend import set_session
 
-def check_missing_img(data_dir, nb_img):
-    missing = []
-    for i in range(1, nb_img):
-        if os.path.isfile(data_dir + "1/" + str(i) + ".jpg") == False:
-            missing.append(str(i))
-    return missing
-
-
 model_path = "models/R128_P1_cc-sgd_C2D_16(3-3)mp(2-2)_128sm_2018-05-25_19:22:53"
 validation_data_dir = "data/validation/"
 test_data_dir = "data/test/"
@@ -29,6 +21,31 @@ nb_batch_test = 128
 nb_batch_val = 64
 batch_size = 100
 nb_class=128
+
+def check_missing_img(data_dir, nb_img):
+    missing = []
+    for i in range(1, nb_img+1):
+        if os.path.isfile(data_dir + "1/" + str(i) + ".jpg") == False:
+            missing.append(str(i))
+    return missing
+
+def check_result(line, data_dir):
+    line=line.split(',')
+    return os.path.isfile(data_dir + str(line[1]).rstrip() + "/" + str(line[0]) + "_" + str(line[1]).rstrip() + ".jpg")
+
+
+def check_Accuracy(solution_file, data_dir):
+    true_res=0
+    false_res=0
+    with open(solution_file) as fp:
+        line = fp.readline()
+        while line:
+            if check_result(line, data_dir) == False:
+                false_res+=1
+            else:
+                true_res+=1
+            line = fp.readline()
+    print("True : " +  str(true_res) + " - False : " + str(false_res) + " - Accuracy = " + str(100*true_res/(true_res+false_res))+ "%")
 
 print("Loading model...")
 model = load_model(model_path)
@@ -64,7 +81,7 @@ raw_val_results = model.predict_generator(raw_validation_generator, nb_batch_val
 raw_val_results_to_file = open(val_submission_file, "w")
 
 result_nb=0
-for img_nb in range(1, nb_val_img):
+for img_nb in range(1, nb_val_img+1):
     if str(img_nb) in val_missing:
         raw_val_results_to_file.write(str(img_nb) + ",no image\n")
     else:
@@ -98,7 +115,7 @@ test_results = model.predict_generator(test_generator, nb_batch_test)
 test_results_to_file = open(test_submission_file, "w")
 
 result_nb=0
-for img_nb in range(1, nb_test_img):
+for img_nb in range(1, nb_test_img+1):
     if str(img_nb) in test_missing:
         test_results_to_file.write(str(img_nb) + "," + str(random.randint(1, 128)) + "\n")
     else:
@@ -113,4 +130,8 @@ for img_nb in range(1, nb_test_img):
 
 test_results_to_file.close()
 print("Finnished written test results")
+
+check_Accuracy(val_submission_file, validation_data_dir)
+
+
 
