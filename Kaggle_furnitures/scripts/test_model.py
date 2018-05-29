@@ -33,8 +33,7 @@ def check_result(line, data_dir):
     line=line.split(',')
     return os.path.isfile(data_dir + str(line[1]).rstrip() + "/" + str(line[0]) + "_" + str(line[1]).rstrip() + ".jpg")
 
-
-def check_Accuracy(solution_file, data_dir):
+def check_accuracy(solution_file, data_dir):
     true_res=0
     false_res=0
     with open(solution_file) as fp:
@@ -47,91 +46,66 @@ def check_Accuracy(solution_file, data_dir):
             line = fp.readline()
     print("True : " +  str(true_res) + " - False : " + str(false_res) + " - Accuracy = " + str(100*true_res/(true_res+false_res))+ "%")
 
+def write_results(results, nb_img, submission_file):
+    results_to_file = open(submission_file, "w")
+    result_nb=0
+    for img_nb in range(1, nb_img+1):
+        if str(img_nb) in test_missing:
+            results_to_file.write(str(img_nb) + "," + str(random.randint(1, 128)) + "\n")
+        else:
+            prob=0
+            class_predicted=0
+            for class_nb in range(nb_class):
+                if test_results[result_nb][class_nb] > prob:
+                    class_predicted=class_nb
+                    prob=test_results[result_nb][class_nb]
+            results_to_file.write(str(img_nb) + "," + str(class_predicted) + "\n")
+            result_nb=result_nb + 1
+    results_to_file.close()
+
+def init_generator(data_dir, is_test):
+    datagen = ImageDataGenerator(rescale=1. / 255)
+    if is_test == True:
+        generator = datagen.flow_from_directory(
+            data_dir,
+            target_size=(img_width, img_height),
+            batch_size=batch_size,
+            class_mode=None,
+            shuffle=False)
+        print ("toto")
+    else:
+        generator = datagen.flow_from_directory(
+            data_dir,
+            target_size=(img_width, img_height),
+            batch_size=batch_size,
+            class_mode='categorical')
+    return generator
+
+
 print("Loading model...")
 model = load_model(model_path)
 
 print("Loading validation data...")
-validation_datagen = ImageDataGenerator(rescale=1. / 255)
-
-validation_generator = validation_datagen.flow_from_directory(
-    validation_data_dir,
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
-    class_mode='categorical')
-
+validation_generator = init_generator(validation_data_dir, False)
 print("Evaluate validation data...")
 evaluation = model.evaluate_generator(validation_generator, nb_batch_val)
 print("Model evaluation on validation data : " + str(evaluation))
 
 print("Loading raw validation data...")
-raw_validation_datagen = ImageDataGenerator(rescale=1. / 255)
-
-raw_validation_generator = raw_validation_datagen.flow_from_directory(
-    raw_validation_data_dir,
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
-    class_mode=None,
-    shuffle=False)
-
+raw_validation_generator = init_generator(raw_validation_data_dir, True)
 val_missing = check_missing_img(raw_validation_data_dir, nb_val_img)
 print(str(len(val_missing)) + " raw validation images are missing")
-
 print("Predict on validation_Raw...")
 raw_val_results = model.predict_generator(raw_validation_generator, nb_batch_val)
-raw_val_results_to_file = open(val_submission_file, "w")
-
-result_nb=0
-for img_nb in range(1, nb_val_img+1):
-    if str(img_nb) in val_missing:
-        raw_val_results_to_file.write(str(img_nb) + ",no image\n")
-    else:
-        prob=0
-        class_predicted=0
-        for class_nb in range(nb_class):
-            if raw_val_results[result_nb][class_nb] > prob:
-                class_predicted=class_nb
-                prob=raw_val_results[result_nb][class_nb]
-        raw_val_results_to_file.write(str(img_nb) + "," + str(class_predicted) + "\n")
-        result_nb= result_nb + 1
-
-raw_val_results_to_file.close()
+write_results(raw_val_results, nb_val_img, val_submission_file)
 print("Finnished written raw validation results")
 
 print("Predict on test...")
-# Prediction to Kaggle that returns us a poor result
-test_datagen = ImageDataGenerator(rescale=1. / 255)
-
-test_generator = test_datagen.flow_from_directory(
-    test_data_dir,
-    target_size=(img_width, img_height),
-    batch_size=batch_size,
-    class_mode=None,
-    shuffle=False)
-
+test_generator = init_generator(test_data_dir, True)
 test_missing = check_missing_img(test_data_dir, nb_test_img)
 print(str(len(test_missing)) + " test images are missing")
-
 test_results = model.predict_generator(test_generator, nb_batch_test)
-test_results_to_file = open(test_submission_file, "w")
-
-result_nb=0
-for img_nb in range(1, nb_test_img+1):
-    if str(img_nb) in test_missing:
-        test_results_to_file.write(str(img_nb) + "," + str(random.randint(1, 128)) + "\n")
-    else:
-        prob=0
-        class_predicted=0
-        for class_nb in range(nb_class):
-            if test_results[result_nb][class_nb] > prob:
-                class_predicted=class_nb
-                prob=test_results[result_nb][class_nb]
-        test_results_to_file.write(str(img_nb) + "," + str(class_predicted) + "\n")
-        result_nb=result_nb + 1
-
-test_results_to_file.close()
+write_results(test_results, nb_test_img, test_submission_file)
 print("Finnished written test results")
 
-check_Accuracy(val_submission_file, validation_data_dir)
-
-
-
+check_accuracy(val_submission_file, validation_data_dir)
