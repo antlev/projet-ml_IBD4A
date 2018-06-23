@@ -10,8 +10,7 @@ from scripts.my_classes import MysterySequencer, all_diff_element
 ts = time.time()
 date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
 
-experiment_name = "MYST_LSTM_CC_RM_LINEAR" + date_time
-# experiment_name = "TEST_" + date_time
+experiment_name = "MYST_LSTM_CC_RM_16" + date_time
 print("Launching experiment : " + experiment_name)
 
 # Adapt to computer
