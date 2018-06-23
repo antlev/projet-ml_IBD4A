@@ -4,21 +4,7 @@ from keras.callbacks import *
 import time
 import datetime
 import numpy as np
-from scripts.my_classes import MysterySequencer
-
-def all_diff_element(array, is_input):
-    if array.size > 1000:
-        array_size=1000
-    else:
-        array_size=array.size
-    elements=[]
-    for i in range((array_size)):
-        if array[i] not in elements:
-            if(is_input):
-                elements.append(array[i])
-            else:
-                elements.append(array[i][0])
-    return elements
+from scripts.my_classes import MysterySequencer, all_diff_element
 
 # Experiment name
 ts = time.time()
@@ -27,7 +13,7 @@ date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
 experiment_name = "MYST_BC_RM_LINEAR" + date_time
 print("Launching experiment : " + experiment_name)
 
-# Adapt to cputer
+# Adapt to computer
 input_data_path = 'data/2018_04_28_full_train-000000-input.npy'
 output_classification_path = 'data/2018_04_28_full_train-000000-output1.npy'
 log_dir = "logs/"
@@ -47,7 +33,7 @@ output_classification=np.load(output_classification_path, mmap_mode='r')
 
 # Before preprocessing
 print("Raw data :")
-print("input_data shape : " + str(input_data.shape) + "input_data[0] size : " + str(input_data[0].size) + " - different values are : " + str(all_diff_element(input_data[0], True)))
+print("input_data shape : " + str(input_data.shape) + " - input_data[0] size : " + str(input_data[0].size) + " - different values are : " + str(all_diff_element(input_data[0], True)))
 print("output_data shape : " + str(output_classification.shape) + " - different values are : " + str(all_diff_element(output_classification, False)))
 
 # Split train validation
@@ -56,12 +42,12 @@ output_classification_train, output_classification_validation = np.split(output_
 
 # After preprocessing
 print("After split :")
-print("input_data_train shape :" + str(input_data_train.shape) + "input_data_validation shape :" + str(input_data_validation.shape) )
-print("output_classification_train shape :" + str(output_classification_train.shape) + "output_classification_validation shape :" + str(output_classification_validation.shape))
+print("input_data_train shape :" + str(input_data_train.shape) + " - input_data_validation shape :" + str(input_data_validation.shape) )
+print("output_classification_train shape :" + str(output_classification_train.shape) + " - output_classification_validation shape :" + str(output_classification_validation.shape))
 
 # Generator
-train_generator = MysterySequencer(input_data_train, output_classification_train, NUMBER_OF_CLASSES, BATCH_SIZE)
-val_generator = MysterySequencer(input_data_validation, output_classification_validation, NUMBER_OF_CLASSES, BATCH_SIZE)
+train_generator = MysterySequencer(input_data_train, output_classification_train, NUMBER_OF_CLASSES, BATCH_SIZE, True)
+val_generator = MysterySequencer(input_data_validation, output_classification_validation, NUMBER_OF_CLASSES, BATCH_SIZE, True)
 
 # Model
 model = Sequential()
