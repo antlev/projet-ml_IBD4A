@@ -7,7 +7,7 @@ ______________________________
 
 MYST_LSTM_CC_ADAM_16  = 
 MYST_LSTM_CC_ADAM_128 =
-MYST_LSTM_CC_ADAM_256 =
+MYST_LSTM_CC_ADAM_256 = In progress
 MYST_LSTM_CC_ADAM_516 = done  loss: 2.1695 - acc: 0.4502 - val_loss: 2.1827 - val_acc: 0.4367    sur 10 epoch (il montait encore)
 
 ______________________________
