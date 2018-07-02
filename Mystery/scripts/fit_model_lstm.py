@@ -5,27 +5,34 @@ import datetime
 import numpy as np
 from keras.layers import Dense, Activation
 from scripts.my_classes import MysterySequencer, all_diff_element
+#gpu
+import tensorflow as tf
+sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+from tensorflow.python.client import device_lib
+print(device_lib.list_local_devices())
+from keras import backend as K
+K.tensorflow_backend._get_available_gpus()
 
 # Experiment name
 ts = time.time()
-date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
+date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
 
-experiment_name = "MYST_LSTM_CC_RM_16" + date_time
+experiment_name = "MYST_LSTM_CC_ADAM_128_BC5000_" + date_time
 print("Launching experiment : " + experiment_name)
 
 # Adapt to computer
-input_data_path = 'data/2018_04_28_full_train-000000-input.npy'
-output_lstm_path = 'data/2018_04_28_full_train-000000-output2.npy'
+input_data_path = 'D://data//2018_04_28_full_train-000000-input.npy'
+output_lstm_path = 'D://data//2018_04_28_full_train-000000-output2.npy'
 log_dir = "logs/"
-model_dir = "models/"
+model_dir = "modelsLstm/"
 
 RANDOM_SEED = 42
 INPUT_SIZE = 15444000
 NUMBER_OF_CLASSES = 1020
-BATCH_SIZE = 150000
+BATCH_SIZE = 5000
 INPUT_SHAPE=(4,255)
 # Learning
-EPOCHS = 50
+EPOCHS = 20
 
 # Load data
 input_data=np.load(input_data_path, mmap_mode='r')
@@ -52,12 +59,12 @@ val_generator = MysterySequencer(input_data_validation, output_lstm_validation, 
 
 # Model
 model = keras.models.Sequential()
-model.add(keras.layers.LSTM(16, input_shape=INPUT_SHAPE))
+model.add(keras.layers.LSTM(128, input_shape=INPUT_SHAPE))
 model.add(Dense(30))
 model.add(Activation('softmax'))
 
 model.compile(loss='categorical_crossentropy',
-              optimizer='rmsprop',
+              optimizer='Adam',
               metrics=['accuracy'])
 
 # Callback
