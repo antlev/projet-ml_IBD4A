@@ -1,0 +1,69 @@
+MYST_LSTM_CC_RM_16  = done
+MYST_LSTM_CC_RM_128 = done
+MYST_LSTM_CC_RM_256 = done
+MYST_LSTM_CC_RM_516 = done
+
+______________________________
+
+MYST_LSTM_CC_ADAM_16  = 
+MYST_LSTM_CC_ADAM_128 = In progress
+MYST_LSTM_CC_ADAM_256 = done  loss: 2.3967 - acc: 0.3523 - val_loss: 2.4059 - val_acc: 0.3464    sur 20 epoch
+MYST_LSTM_CC_ADAM_516 = done  loss: 2.1695 - acc: 0.4502 - val_loss: 2.1827 - val_acc: 0.4367    sur 10 epoch (il montait encore)
+
+______________________________
+pour les sgd je propose de les faire directement avec du momentum
+
+MYST_LSTM_CC_SGD001_16  = 
+MYST_LSTM_CC_SGD025_16  =
+MYST_LSTM_CC_SGD050_16  =
+MYST_LSTM_CC_SGD075_16  =
+##########
+MYST_LSTM_CC_SGD001_128 =
+MYST_LSTM_CC_SGD025_128 =
+MYST_LSTM_CC_SGD050_128 =
+MYST_LSTM_CC_SGD075_128 =
+##########
+MYST_LSTM_CC_SGD001_256 =
+MYST_LSTM_CC_SGD025_256 =
+MYST_LSTM_CC_SGD050_256 =
+MYST_LSTM_CC_SGD075_256 =
+##########
+MYST_LSTM_CC_SGD001_516 =
+MYST_LSTM_CC_SGD025_516 =
+MYST_LSTM_CC_SGD050_516 =
+MYST_LSTM_CC_SGD075_516 =
+
+______________________________
+
+MYST_LSTM_CC_NADAM_16  = 
+MYST_LSTM_CC_NADAM_128 =
+MYST_LSTM_CC_NADAM_256 =
+MYST_LSTM_CC_NADAM_516 = 
+
+______________________________
+
+MYST_LSTM_CC_ADAMAX_16  = 
+MYST_LSTM_CC_ADAMAX_128 =
+MYST_LSTM_CC_ADAMAX_256 =
+MYST_LSTM_CC_ADAMAX_516 = 
+
+______________________________
+
+MYST_LSTM_CC_ADADELTA_16  = 
+MYST_LSTM_CC_ADADELTA_128 =
+MYST_LSTM_CC_ADADELTA_256 =
+MYST_LSTM_CC_ADADELTA_516 = 
+
+______________________________
+
+MYST_LSTM_CC_ADAGRAD_16  = 
+MYST_LSTM_CC_ADAGRAD_128 =
+MYST_LSTM_CC_ADAGRAD_256 =
+MYST_LSTM_CC_ADAGRAD_516 = 
+
+______________________________
+
+MYST_LSTM_CC_TFOPTIMIZER_16  = 
+MYST_LSTM_CC_TFOPTIMIZER_128 =
+MYST_LSTM_CC_TFOPTIMIZER_256 =
+MYST_LSTM_CC_TFOPTIMIZER_516 =

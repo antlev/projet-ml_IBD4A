@@ -5,20 +5,26 @@ import datetime
 import numpy as np
 from keras.layers import Dense, Activation
 from scripts.my_classes import MysterySequencer, all_diff_element
+#gpu
+import tensorflow as tf
+sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+from tensorflow.python.client import device_lib
+print(device_lib.list_local_devices())
+from keras import backend as K
+K.tensorflow_backend._get_available_gpus()
 
 # Experiment name
 ts = time.time()
-date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
-
+date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
 # experiment_name = "MYST_LSTM_CC_RM0.01_256_" + date_time
-experiment_name = "TEST.01_256_" + date_time
+experiment_name = "MYST_LSTM_CC_ADAM_128_BC5000_" + date_time
 print("Launching experiment : " + experiment_name)
 
 # Adapt to computer
 input_data_path = 'data/2018_04_28_full_train-000000-input.npy'
 output_lstm_path = 'data/2018_04_28_full_train-000000-output2.npy'
 log_dir = "logs/"
-model_dir = "models/"
+model_dir = "modelsLstm/"
 
 INPUT_SIZE = 15444000
 NUMBER_OF_CLASSES = 1020
@@ -53,7 +59,6 @@ val_generator = MysterySequencer(input_data_validation, output_lstm_validation, 
 # Model
 model = keras.models.Sequential()
 model.add(keras.layers.LSTM(128, input_shape=INPUT_SHAPE))
-# model.add(keras.layers.LSTM(128))
 model.add(Dense(30))
 model.add(Activation('softmax'))
 

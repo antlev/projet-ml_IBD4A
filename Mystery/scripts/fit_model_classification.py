@@ -8,14 +8,14 @@ from scripts.my_classes import MysterySequencer, all_diff_element
 
 # Experiment name
 ts = time.time()
-date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
+date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
 
 experiment_name = "MYST_BC_RM_LINEAR" + date_time
 print("Launching experiment : " + experiment_name)
 
 # Adapt to computer
-input_data_path = 'data/2018_04_28_full_train-000000-input.npy'
-output_classification_path = 'data/2018_04_28_full_train-000000-output1.npy'
+input_data_path = 'D://data//2018_04_28_full_train-000000-input.npy'
+output_classification_path = 'D://data//2018_04_28_full_train-000000-output1.npy'
 log_dir = "logs/"
 model_dir = "models/"
 
