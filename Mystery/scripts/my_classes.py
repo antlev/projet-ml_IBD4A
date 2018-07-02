@@ -55,3 +55,35 @@ def all_diff_element(array, is_input):
             else:
                 elements.append(array[i][0])
     return elements
+
+
+activations_shortcut = {'sigmoid' : 'Si',
+                        'softsign' : 'Ss',
+                        'softplus' : 'Sp',
+                        'elu' : 'E',
+                        'selu' : 'Se',
+                        'softmax' : 'Sm',
+                        'tanh' : 'T',
+                        'relu': 'R',
+                        'hard_sigmoid' :'Hs',
+                        'linear': 'L'}
+
+loss_shortcut = {'categorical_crossentropy' : 'cc',
+                 'kullback_leibler_divergence' : 'kld',
+                 'mean_squared_error' : 'mse',
+                 'mean_absolute_error' : 'mae',#
+                 'squared_hinge' : 'sh',#
+                 'hinge' : 'h',##
+                 'logcosh' : 'lc',##
+                 'categorical_hinge' : 'ch',
+                 'cosine_proximity' : 'cp',
+                 'poisson' : 'po' }#
+
+optimizer_shortcut = {'sgd' : 'sgd',
+                      'rmsprop' : 'rm',
+                      'Adagrad' : 'adag',#
+                      'Adadelta' : 'adad',#
+                      'Adam' :'adam',#
+                      'Adamax' : 'adax',#
+                      'Nadam' : 'nada',#
+                      'TFOptimizer' : 'tf' }#
