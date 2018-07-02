@@ -10,7 +10,8 @@ from scripts.my_classes import MysterySequencer, all_diff_element
 ts = time.time()
 date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H:%M:%S')
 
-experiment_name = "MYST_LSTM_CC_RM_16" + date_time
+# experiment_name = "MYST_LSTM_CC_RM0.01_256_" + date_time
+experiment_name = "TEST.01_256_" + date_time
 print("Launching experiment : " + experiment_name)
 
 # Adapt to computer
@@ -19,13 +20,12 @@ output_lstm_path = 'data/2018_04_28_full_train-000000-output2.npy'
 log_dir = "logs/"
 model_dir = "models/"
 
-RANDOM_SEED = 42
 INPUT_SIZE = 15444000
 NUMBER_OF_CLASSES = 1020
-BATCH_SIZE = 150000
+BATCH_SIZE = 50000
 INPUT_SHAPE=(4,255)
 # Learning
-EPOCHS = 50
+EPOCHS = 10
 
 # Load data
 input_data=np.load(input_data_path, mmap_mode='r')
@@ -52,17 +52,19 @@ val_generator = MysterySequencer(input_data_validation, output_lstm_validation, 
 
 # Model
 model = keras.models.Sequential()
-model.add(keras.layers.LSTM(16, input_shape=INPUT_SHAPE))
+model.add(keras.layers.LSTM(128, input_shape=INPUT_SHAPE))
+# model.add(keras.layers.LSTM(128))
 model.add(Dense(30))
 model.add(Activation('softmax'))
 
+optimizer = keras.optimizers.RMSprop(lr=0.01)
 model.compile(loss='categorical_crossentropy',
-              optimizer='rmsprop',
+              optimizer=optimizer,
               metrics=['accuracy'])
 
 # Callback
 tb_callback = TensorBoard(log_dir + experiment_name)
-model_checkpoint = ModelCheckpoint(model_dir + experiment_name)
+model_checkpoint = ModelCheckpoint(model_dir + experiment_name, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 callback_list = [tb_callback, model_checkpoint]
 
 # Fit model
