@@ -26,20 +26,20 @@ BATCH_SIZE = 150000
 INPUT_SHAPE=(4,255)
 # Learning
 EPOCHS = 3
-NB_LAUNCH = 1
+NB_LAUNCH = 3
 
 layers_conf = (
-    ('LSTM', 'D'),
+    ('LSTM', 'LSTMF', 'D'),
     ('LSTM', 'D'),
     ('LSTM', 'D')
 )
 layers_dim = (
-    (16, 30),
+    (16, 32, 30),
     (32, 30),
     (64, 30)
 )
 activations_conf = (
-    ('softmax', 'softmax'),
+    ('softmax', 'softmax', 'softmax'),
     ('softmax', 'softmax'),
     ('softmax', 'softmax')
 )
@@ -83,8 +83,13 @@ for lauch_nb in range(NB_LAUNCH):
                     model.add(Dense(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb], input_shape=INPUT_SHAPE))
                     model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + "-" + activations_shortcut[activations_conf[model_nb][layer_nb]]
                 if layers_conf[model_nb][layer_nb] == 'LSTM':
-                    model.add(LSTM(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb], input_shape=INPUT_SHAPE))
+                    model.add(LSTM(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb], input_shape=INPUT_SHAPE, return_sequences=True))
                     model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + "-" + activations_shortcut[activations_conf[model_nb][layer_nb]]
+                if layers_conf[model_nb][layer_nb] == 'LSTMF':
+                    model.add(LSTM(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb],input_shape=INPUT_SHAPE,return_sequences=False))
+                    model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(
+                        layers_dim[model_nb][layer_nb]) + "-" + activations_shortcut[
+                                      activations_conf[model_nb][layer_nb]]
             else:
                 if layers_conf[model_nb][layer_nb] == 'C2D':
                     model.add(Conv2D(layers_dim[model_nb][layer_nb], (2,2), activation=activations_conf[model_nb][layer_nb]))
@@ -97,9 +102,13 @@ for lauch_nb in range(NB_LAUNCH):
                     model.add(Dense(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb]))
                     model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + "-" + activations_shortcut[activations_conf[model_nb][layer_nb]]
                 if layers_conf[model_nb][layer_nb] == 'LSTM':
-                    model.add(Reshape((4,255)))
-                    model.add(LSTM(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb]))
+                    model.add(LSTM(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb], return_sequences=True))
                     model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(layers_dim[model_nb][layer_nb]) + "-" + activations_shortcut[activations_conf[model_nb][layer_nb]]
+                if layers_conf[model_nb][layer_nb] == 'LSTMF':
+                    model.add(LSTM(layers_dim[model_nb][layer_nb], activation=activations_conf[model_nb][layer_nb], return_sequences=False))
+                    model_desc += str(layers_conf[model_nb][layer_nb]) + '-' + str(
+                        layers_dim[model_nb][layer_nb]) + "-" + activations_shortcut[
+                                      activations_conf[model_nb][layer_nb]]
 
             if(layer_nb != len(layers_conf[model_nb])-1):
                 model_desc += '-'
@@ -108,13 +117,13 @@ for lauch_nb in range(NB_LAUNCH):
                       optimizer=optimizer_conf[model_nb],
                       metrics=['accuracy'])
 
-        model_desc += "." + str(lauch_nb)
-        tb_callback = TensorBoard(log_dir + experiment_name + '.' + model_desc)
-        model_checkpoint = ModelCheckpoint(model_dir + experiment_name + model_desc)
+        model_desc += "_" + str(lauch_nb)
+        tb_callback = TensorBoard(log_dir + experiment_name + '_' + model_desc)
+        model_checkpoint = ModelCheckpoint(model_dir + experiment_name + '_' + model_desc)
 
         callback_list = [tb_callback, model_checkpoint]
 
-        print(">>> Fitting model >" + model_desc + "< log >" + log_dir + experiment_name + model_desc + "<")
+        print(">>> Fitting model >" + model_desc + "< log >" + log_dir + experiment_name + model_desc + "< model >" + model_dir + experiment_name + '_' + model_desc + "<")
 
         model.fit_generator(
             train_generator,
