@@ -36,14 +36,15 @@ input_data_train, input_data_validation = np.split(input_data, [int(.7*len(input
 output1_train, output1_validation = np.split(output1, [int(.7 * len(output1))])
 
 # Generator
-train_generator = MysterySequencerOutput1(input_data_train, output1_train, NUMBER_OF_CLASSES, BATCH_SIZE)
-val_generator = MysterySequencerOutput1(input_data_validation, output1_validation, NUMBER_OF_CLASSES, BATCH_SIZE)
+train_generator = MysterySequencerOutput1(input_data_train, output1_train, NUMBER_OF_CLASSES, BATCH_SIZE, False)
+val_generator = MysterySequencerOutput1(input_data_validation, output1_validation, NUMBER_OF_CLASSES, BATCH_SIZE, False)
 
 # Model
 model = Sequential()
 model.add(Dense(1020, activation='softmax', input_shape=INPUT_SHAPE))
+model.add(Dense(1, activation='softmax', input_shape=INPUT_SHAPE))
 
-model.compile(loss='categorical_crossentropy',
+model.compile(loss='binary_crossentropy',
               optimizer='rmsprop',
               metrics=['accuracy'])
 

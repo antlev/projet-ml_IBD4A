@@ -28,21 +28,6 @@ class MysterySequencer(keras.utils.Sequence):
             batch_y = keras.utils.to_categorical(batch_y, self.nb_classes)
         return batch_x, batch_y
 
-class MysterySequencerOutput1(keras.utils.Sequence):
-    def __init__(self, x_set, y_set, nb_classes, batch_size):
-        self.x, self.y = x_set, y_set
-        self.nb_classes = nb_classes
-        self.batch_size = batch_size
-    def __len__(self) -> int:
-        return int(np.ceil(len(self.x) / float(self.batch_size)))
-    def __getitem__(self, idx) -> tuple:
-        batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]
-        batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]
-        outputs = np.copy(batch_y)
-        outputs[outputs < 0] = np.float32(0.0)
-        batch_y = keras.utils.to_categorical(batch_y, self.nb_classes)
-        return batch_x, batch_y
-
 def sample(array):
     print("data size = " + str(array.size))
     print("data shape = " + str(array[0].size))
