@@ -4,8 +4,7 @@ import time
 import datetime
 import numpy as np
 from keras.layers import Dense, Activation
-from scripts.my_classes import MysterySequencer, all_diff_element
-#gpu
+from scripts.my_classes import MysterySequencer
 import tensorflow as tf
 sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 from tensorflow.python.client import device_lib
@@ -38,9 +37,9 @@ input_data=np.load(input_data_path, mmap_mode='r')
 output_lstm=np.load(output_lstm_path, mmap_mode='r')
 
 # Before preprocessing
-print("Raw data :")
-print("input_data shape : " + str(input_data.shape) + " - input_data[0] size : " + str(input_data[0].size) + " - different values are : " + str(all_diff_element(input_data[0], True)))
-print("output_data shape : " + str(output_lstm.shape) + " - different values are : " + str(all_diff_element(output_lstm[0], True)))
+# print("Raw data :")
+# print("input_data shape : " + str(input_data.shape) + " - input_data[0] size : " + str(input_data[0].size) + " - different values are : " + str(all_diff_element(input_data[0], True)))
+# print("output_data shape : " + str(output_lstm.shape) + " - different values are : " + str(all_diff_element(output_lstm[0], True)))
 
 input_data = input_data.reshape(-1,4,255)
 

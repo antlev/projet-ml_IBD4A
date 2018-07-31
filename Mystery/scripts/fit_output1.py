@@ -4,8 +4,16 @@ from keras.callbacks import *
 import time
 import datetime
 import numpy as np
-from scripts.my_classes import MysterySequencerOutput1
+from scripts.my_classes import MysterySequencer
 
+#gpu
+import tensorflow as tf
+sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+from tensorflow.python.client import device_lib
+print(device_lib.list_local_devices())
+from keras import backend as K
+K.tensorflow_backend._get_available_gpus()
+exit()
 # Experiment name
 ts = time.time()
 date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
@@ -50,7 +58,7 @@ model.compile(loss='binary_crossentropy',
 
 # Callback
 tb_callback = TensorBoard(log_dir + experiment_name)
-model_checkpoint = ModelCheckpoint(model_dir + experiment_name)
+model_checkpoint = ModelCheckpoint(model_dir + experiment_name + ".new", monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 callback_list = [tb_callback, model_checkpoint]
 
 # Fit model
