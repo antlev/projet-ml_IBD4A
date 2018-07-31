@@ -1,21 +1,17 @@
 # projet-ml_IBD4A
 
-## What is saved in project
+## Mnist
 
-### Mnist
+- A simple approach of Mnist dataset
 
-- 2 scripts to test Mnist data : 
-	- mnist.py using a simple MLP
-	- mnistConv.py using a convolutional network
-- Logs for Mnist
+## Cifar10
 
-### Cifar10
+- A simple approach of Cifar10 dataset
 
-- A simple script to test Cifar10 data
-- Logs for Cifar10
+## Kaggle_furniture
 
-### Kaggl_furnitures
+- scripts logs and models for a Kaggle competition about furniture
 
-- A Parse script to download images
-- A simple script to train model
+## Mystery dataset
 
+- Scripts, logs and models for a mystery dataset (completely unknown)
